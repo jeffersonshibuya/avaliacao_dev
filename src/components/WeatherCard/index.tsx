@@ -13,6 +13,7 @@ import { RiFoggyLine } from 'react-icons/ri'
 
 import GetTempoDescription from "../../utils/GetTempoDescription";
 import { WeatherIcon } from "../WeatherIcon";
+import { api } from "../../services/api";
 
 interface CardProps {
   cidade: string;
@@ -60,10 +61,14 @@ export function WeatherCard(data: CardProps) {
     }
 
     async function getWeatherForecast() {
-      const response = await axios.get(`http://servicos.cptec.inpe.br/XML/cidade/${data.cidade_id}/previsao.xml`)
-      const response_parser: any = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 2 }))
+      // const response = await axios.get(`http://servicos.cptec.inpe.br/XML/cidade/${data.cidade_id}/previsao.xml`)
+      // const response_parser: any = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 2 }))
 
-      setPrevisaoData(response_parser.cidade.previsao)
+      const response = await api.post('/getPrevisao', {
+        codigo_cidade: data.cidade_id
+      })
+
+      setPrevisaoData(response.data.cidade.previsao)
     }
 
     getWeather();

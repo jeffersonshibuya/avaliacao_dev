@@ -1,0 +1,26 @@
+{
+  "regiao": {
+    "sudeste": [
+      {
+        "cidade": "Sao Paulo",
+        "uf": "SP",
+        "estacao": "SBGR"
+      },
+      {
+        "cidade": "Rio de Janeiro",
+        "uf": "RJ",
+        "estacao": "SBGL"
+      },
+      {
+        "cidade": "Belo Horizonte",
+        "uf": "MG",
+        "estacao": "SBBH"
+      },
+      {
+        "cidade": "Vitoria",
+        "uf": "ES",
+        "estacao": "SBVT"
+      }
+    ]
+  }
+}

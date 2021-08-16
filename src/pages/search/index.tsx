@@ -9,6 +9,7 @@ import GetTempoDescription from "../../utils/GetTempoDescription";
 import { FaSearch, FaTemperatureHigh } from "react-icons/fa";
 import { FiClock } from "react-icons/fi";
 import { TiWeatherPartlySunny, TiWeatherSunny } from "react-icons/ti";
+import { api } from "../../services/api";
 
 interface ResultProps {
   _text: string;
@@ -40,13 +41,14 @@ export default function Search() {
   const [previsoes, setPrevisoes] = useState([] as CidadePrevisaoType[])
 
   async function getCidades() {
-    const cidadesList = await axios.get(`http://servicos.cptec.inpe.br/XML/listaCidades?city=${searchField}`)
-    const cidadesList_parser: any = JSON.parse(convert.xml2json(cidadesList.data, { compact: true, spaces: 2 }))
+    const response: any = await api.post('/getCidades', {
+      searchField
+    })
 
-    if (Array.isArray(cidadesList_parser.cidades.cidade)) {
-      setCidades(cidadesList_parser.cidades.cidade)
+    if (Array.isArray(response.data.cidades.cidade)) {
+      setCidades(response.data.cidades.cidade)
     } else {
-      setCidades([{ ...cidadesList_parser.cidades.cidade }])
+      setCidades([{ ...response.data.cidades.cidade }])
     }
 
   }
@@ -61,11 +63,14 @@ export default function Search() {
     async function getPrevisoes() {
       const data: CidadePrevisaoType[] = []
       for await (const cidadeSearch of cidades) {
-        const response = await axios.get(`http://servicos.cptec.inpe.br/XML/cidade/${cidadeSearch.id?._text}/previsao.xml`)
-        const response_parser: any = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 2 }))
+        // const response = await axios.get(`http://servicos.cptec.inpe.br/XML/cidade/${cidadeSearch.id?._text}/previsao.xml`)
+        // const response_parser: any = JSON.parse(convert.xml2json(response.data, { compact: true, spaces: 2 }))
 
-        data.push(response_parser.cidade)
-        // setPrevisoes([...previsoes, response_parser.cidade])
+        const response = await api.post('/getPrevisao', {
+          codigo_cidade: cidadeSearch.id?._text
+        })
+
+        data.push(response.data.cidade)
       }
 
       setPrevisoes(data);
@@ -108,7 +113,7 @@ export default function Search() {
               key={p.nome._text}
               bg={'gray.900'}
               boxShadow={'2xl'}
-              maxWidth={'300px'}
+              w={'auto'}
               paddingBottom={'10px'}
               rounded={'md'}
               overflow={'hidden'}>
